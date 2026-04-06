@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samba Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080a0e;
+    --surface: #0f1218;
+    --surface2: #171c26;
+    --border: #1e2535;
+    --border2: #2a3348;
+    --accent: #00c896;
+    --accent2: #00a87d;
+    --accent-glow: rgba(0, 200, 150, 0.15);
+    --accent-dim: rgba(0, 200, 150, 0.06);
+    --gold: #e8c97a;
+    --green: #4ade80;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --text: #e2e8f0;
+    --muted: #4a5568;
+    --muted2: #64748b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* background atmosphere */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -20%;
+    right: -10%;
+    width: 55%;
+    height: 65%;
+    background: radial-gradient(ellipse, rgba(0,200,150,0.055) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -25%;
+    left: -10%;
+    width: 50%;
+    height: 55%;
+    background: radial-gradient(ellipse, rgba(0,168,125,0.04) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app { position: relative; z-index: 1; max-width: 920px; margin: 0 auto; padding: 0 22px 80px; }
+
+  /* ── HEADER ─────────────────────────────────── */
+  header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 36px 0 28px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 36px;
+    gap: 20px;
+  }
+
+  .logo { display: flex; flex-direction: column; gap: 4px; }
+
+  .logo-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.8;
+  }
+
+  .logo-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.4rem;
+    letter-spacing: 4px;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .logo-title span {
+    color: var(--accent);
+  }
+
+  .logo-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: var(--muted2);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+  }
+
+  .header-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.7;
+  }
+
+  /* ── INSPIRATION BANNER ─────────────────────── */
+  .inspiration-banner {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inspiration-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--accent-dim) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .inspiration-banner:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 24px var(--accent-glow);
+  }
+
+  .coach-avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .coach-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    background: var(--surface2);
+    box-shadow: 0 0 16px var(--accent-glow);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .coach-avatar svg {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+  }
+
+  .coach-ring {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,200,150,0.3);
+    animation: pulse-ring 2s ease-out infinite;
+  }
+
+  @keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.3); opacity: 0; }
+  }
+
+  .inspiration-text { flex: 1; }
+
+  .inspiration-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .inspiration-coach {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .inspiration-quote {
+    font-size: 0.72rem;
+    color: var(--muted2);
+    margin-top: 3px;
+    font-style: italic;
+  }
+
+  .inspiration-change {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    color: var(--muted);
+    text-transform: uppercase;
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+
+  .inspiration-banner:hover .inspiration-change { color: var(--accent); }
+
+  /* ── COACH PICKER MODAL ─────────────────────── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,10,14,0.88);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 28px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,200,150,0.08);
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+  }
+
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+    color: var(--text);
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+  }
+  .modal-close:hover { color: var(--text); background: var(--surface2); }
+
+  .modal-subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .coaches-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .coach-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  }
+
+  .coach-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 18px var(--accent-glow);
+    transform: translateY(-1px);
+  }
+
+  .coach-card.selected {
+    border-color: var(--accent);
+    background: rgba(0,200,150,0.07);
+  }
+
+  .coach-card-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 1.5px solid var(--border2);
+  }
+
+  .coach-card-avatar svg { width: 42px; height: 42px; }
+
+  .coach-card-info { flex: 1; min-width: 0; }
+
+  .coach-card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 1.5px;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .coach-card-nick {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+
+  .coach-card-role {
+    font-size: 0.65rem;
+    color: var(--muted2);
+    margin-top: 2px;
+  }
+
+  /* ── TABS ────────────────────────────────────── */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 32px;
+    background: var(--surface);
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .tab {
+    flex: 1;
+    padding: 10px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.2s;
+  }
+
+  .tab.active {
+    background: var(--surface2);
+    color: var(--accent);
+    border: 1px solid var(--border2);
+  }
+
+  .tab:hover:not(.active) { color: var(--text); }
+
+  /* ── PANELS ──────────────────────────────────── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── SECTION LABEL ───────────────────────────── */
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    padding-left: 2px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── DATE ROW ────────────────────────────────── */
+  .date-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    align-items: flex-end;
+  }
+
+  .date-row input[type="date"],
+  .date-row input[type="number"] {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    padding: 10px 14px;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+
+  .date-row input[type="date"]:focus,
+  .date-row input[type="number"]:focus { border-color: var(--accent); }
+
+  .field-group { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+
+  .field-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── METRICS GRID ────────────────────────────── */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .metric-card:hover {
+    border-color: rgba(0,200,150,0.2);
+    box-shadow: 0 0 20px var(--accent-dim);
+  }
+
+  .metric-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .metric-icon { font-size: 0.95rem; }
+  .metric-name { font-size: 0.76rem; font-weight: 500; color: var(--text); flex: 1; }
+
+  .metric-score {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.35rem;
+    letter-spacing: 1px;
+    color: var(--accent);
+    min-width: 28px;
+    text-align: right;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--border);
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(0,200,150,0.5);
+    transition: transform 0.15s;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.25); }
+
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+  }
+
+  .slider-labels span {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.56rem;
+    color: var(--muted);
+  }
+
+  /* ── NOTES ───────────────────────────────────── */
+  .notes-area {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.86rem;
+    padding: 12px 14px;
+    border-radius: 8px;
+    outline: none;
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.55;
+    transition: border-color 0.2s;
+    margin-bottom: 28px;
+  }
+  .notes-area:focus { border-color: var(--accent); }
+
+  /* ── SUBMIT ──────────────────────────────────── */
+  .btn-submit {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    color: #060a0e;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.25rem;
+    letter-spacing: 4px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 24px rgba(0,200,150,0.25);
+  }
+
+  .btn-submit:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 32px rgba(0,200,150,0.35);
+  }
+  .btn-submit:active { transform: translateY(0); }
+
+  /* ── TOAST ───────────────────────────────────── */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 1px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    z-index: 999;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px var(--accent-glow);
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── HISTORY ─────────────────────────────────── */
+  .history-empty {
+    text-align: center;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    padding: 60px 0;
+  }
+
+  .session-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .session-card:hover { border-color: rgba(0,200,150,0.2); }
+
+  .session-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+
+  .session-card-left { display: flex; align-items: center; gap: 10px; }
+
+  .session-mini-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid var(--border2);
+  }
+
+  .session-mini-avatar svg { width: 30px; height: 30px; }
+
+  .session-date-wrap {}
+
+  .session-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  .session-coach-label {
+    font-size: 0.65rem;
+    color: var(--accent);
+    margin-top: 1px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .session-result {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+  }
+
+  .session-meta {
+    display: flex;
+    gap: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.64rem;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .session-scores {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+
+  .score-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 9px;
+    font-size: 0.67rem;
+  }
+
+  .score-chip .chip-val {
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+  }
+
+  .score-chip.high .chip-val { color: var(--green); }
+  .score-chip.med  .chip-val { color: var(--yellow); }
+  .score-chip.low  .chip-val { color: var(--red); }
+
+  .delete-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 4px 6px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.2s, color 0.2s, background 0.2s;
+  }
+
+  .session-card:hover .delete-btn { opacity: 1; }
+  .delete-btn:hover { color: var(--red); background: rgba(248,113,113,0.08); }
+
+  /* ── STATS ───────────────────────────────────── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+  }
+
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.1rem;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .chart-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+
+  .chart-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+
+  canvas { width: 100% !important; }
+
+  .radar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .radar-legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .legend-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+  }
+
+  .legend-name { color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .legend-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .legend-avg { font-family: 'DM Mono', monospace; font-weight: 500; font-size: 0.8rem; }
+
+  /* ── RESPONSIVE ──────────────────────────────── */
+  @media (max-width: 600px) {
+    .metrics-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .radar-wrap { flex-direction: column; }
+    .logo-title { font-size: 2.4rem; }
+    .coaches-grid { grid-template-columns: 1fr; }
+    header { flex-direction: column; }
+  }
+
+  /* ── ENERGIA & HUMOR ─────────────────────────── */
+  .eh-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .eh-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+
+  .eh-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .eh-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+
+  .eh-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s, transform 0.12s;
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+
+  .eh-btn span {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.62rem;
+    color: var(--muted2);
+    transition: color 0.18s;
+    line-height: 1.2;
+  }
+
+  .eh-btn:hover {
+    border-color: rgba(0,200,150,0.35);
+    background: rgba(0,200,150,0.05);
+    transform: translateY(-1px);
+  }
+
+  .eh-btn:hover span { color: var(--text); }
+
+  .eh-btn.selected {
+    border-color: var(--accent);
+    background: rgba(0,200,150,0.1);
+    box-shadow: 0 0 14px var(--accent-glow);
+  }
+
+  .eh-btn.selected span { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .eh-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-eyebrow">Samba Poker Team</div>
+      <div class="logo-title">SAMBA<span> TRACKER</span></div>
+      <div class="logo-sub">Routine Performance Log</div>
+    </div>
+    <div class="header-right">
+      <div class="header-date" id="header-date"></div>
+    </div>
+  </header>
+
+  <!-- INSPIRATION BANNER -->
+  <div class="inspiration-banner" onclick="openCoachPicker()">
+    <div class="coach-avatar-wrap">
+      <div class="coach-avatar" id="banner-avatar"></div>
+      <div class="coach-ring"></div>
+    </div>
+    <div class="inspiration-text">
+      <div class="inspiration-label">★ Inspiração de Hoje</div>
+      <div class="inspiration-coach" id="banner-coach-name">—</div>
+      <div class="inspiration-quote" id="banner-coach-role"></div>
+    </div>
+    <div class="inspiration-change">Trocar →</div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('register', event)">Registrar</button>
+    <button class="tab" onclick="switchTab('history', event)">Histórico</button>
+    <button class="tab" onclick="switchTab('stats', event)">Estatísticas</button>
+  </div>
+
+  <!-- REGISTER -->
+  <div id="panel-register" class="panel active">
+    <div class="date-row">
+      <div class="field-group">
+        <div class="field-label">Data da Sessão</div>
+        <input type="date" id="session-date">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Duração (horas)</div>
+        <input type="number" id="duration" placeholder="ex: 4.5" step="0.5" min="0">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Nº de Torneios</div>
+        <input type="number" id="torneios" placeholder="ex: 12" step="1" min="0">
+      </div>
+    </div>
+
+    <div class="section-label">Intenção do Dia</div>
+    <textarea class="notes-area" id="intention" placeholder="Qual é o seu foco para hoje? O que você quer trabalhar ou melhorar nessa sessão?" style="min-height:70px;margin-bottom:28px"></textarea>
+
+    <div class="section-label">Energia &amp; Humor</div>
+    <div class="eh-grid">
+      <div class="eh-card">
+        <div class="eh-label">⚡ Energia</div>
+        <div class="eh-options" id="energia-options">
+          <button class="eh-btn" data-group="energia" data-value="baixa"     onclick="selectEH(this)">😴<span>Baixa</span></button>
+          <button class="eh-btn" data-group="energia" data-value="media"     onclick="selectEH(this)">🔋<span>Média</span></button>
+          <button class="eh-btn" data-group="energia" data-value="alta"      onclick="selectEH(this)">⚡<span>Alta</span></button>
+          <button class="eh-btn" data-group="energia" data-value="turbinado" onclick="selectEH(this)">🔥<span>Turbinado</span></button>
+        </div>
+      </div>
+      <div class="eh-card">
+        <div class="eh-label">😄 Humor</div>
+        <div class="eh-options" id="humor-options">
+          <button class="eh-btn" data-group="humor" data-value="desmotivado" onclick="selectEH(this)">😞<span>Desmotivado</span></button>
+          <button class="eh-btn" data-group="humor" data-value="neutro"      onclick="selectEH(this)">😐<span>Neutro</span></button>
+          <button class="eh-btn" data-group="humor" data-value="motivado"    onclick="selectEH(this)">😊<span>Motivado</span></button>
+          <button class="eh-btn" data-group="humor" data-value="no_modo"     onclick="selectEH(this)">⚔️<span>Pronto pra Guerra</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Avaliação da Rotina — 1 a 10</div>
+    <div class="metrics-grid" id="metrics-grid"></div>
+
+    <div class="section-label">Notas da Sessão</div>
+    <textarea class="notes-area" id="notes" placeholder="O que aconteceu? Leaks identificados, decisões importantes, estado mental..."></textarea>
+
+    <button class="btn-submit" onclick="saveSession()">Salvar Sessão</button>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="panel-history" class="panel">
+    <div id="history-list"></div>
+  </div>
+
+  <!-- STATS -->
+  <div id="panel-stats" class="panel">
+    <div class="stats-grid" id="stats-grid"></div>
+    <div class="chart-wrap">
+      <div class="chart-title">Evolução da Média de Rotina</div>
+      <canvas id="chart-trend" height="150"></canvas>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">Médias por Aspecto</div>
+      <div class="radar-wrap">
+        <canvas id="chart-radar" width="210" height="210" style="max-width:210px;flex-shrink:0"></canvas>
+        <div class="radar-legend" id="radar-legend"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- COACH PICKER MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeCoachPicker(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Head Coaches</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-subtitle">Escolha sua inspiração para hoje</div>
+    <div class="coaches-grid" id="coaches-grid"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ Sessão salva com sucesso</div>
+
+<script>
+// ── COACHES ──────────────────────────────────────────────────────────────────
+const COACHES = [
+  {
+    id: 'kelvin',
+    name: 'Kelvin Kerber',
+    nick: 'Kelvin_FP:AR',
+    role: 'Fundador & Head Coach',
+    quote: 'Primamos pela proximidade com nossos jogadores.',
+    hue: 165,
+    initials: 'KK',
+    emoji: '♦'
+  },
+  {
+    id: 'pedro',
+    name: 'Pedro Padilha',
+    nick: 'PedroPadilha',
+    role: 'Sócio & Head Coach',
+    quote: 'Consistência cria resultados reais.',
+    hue: 195,
+    initials: 'PP',
+    emoji: '♠'
+  },
+  {
+    id: 'fabiano',
+    name: 'Fabiano Kovalski',
+    nick: 'Kova',
+    role: 'Head Coach',
+    quote: 'Mesclar estudo e prática é o segredo.',
+    hue: 145,
+    initials: 'FK',
+    emoji: '♣'
+  },
+  {
+    id: 'helio',
+    name: 'Hélio Neves',
+    nick: 'HelioNeves',
+    role: 'Head Coach',
+    quote: 'Heads-up é onde os reais se separam.',
+    hue: 210,
+    initials: 'HN',
+    emoji: '♥'
+  },
+  {
+    id: 'guilherme',
+    name: 'Guilherme Carmo',
+    nick: 'Guizão',
+    role: 'Head Coach',
+    quote: 'Volume com qualidade. Sempre.',
+    hue: 260,
+    initials: 'GC',
+    emoji: '♦'
+  },
+  {
+    id: 'allan',
+    name: 'Allan Mello',
+    nick: 'Allan Sheik',
+    role: 'Head Coach',
+    quote: 'Online e live — a evolução não para.',
+    hue: 30,
+    initials: 'AM',
+    emoji: '♠'
+  },
+  {
+    id: 'peter',
+    name: 'Peter Patrício',
+    nick: 'PeterPatricio',
+    role: 'Head Coach',
+    quote: 'Jogue seu melhor poker todo dia.',
+    hue: 180,
+    initials: 'PP2',
+    emoji: '♣'
+  },
+  {
+    id: 'gabriel',
+    name: 'Gabriel Tavares',
+    nick: 'GabrielTavares',
+    role: 'Head Coach',
+    quote: '2025 foi fantástico. E 2026 será maior.',
+    hue: 340,
+    initials: 'GT',
+    emoji: '♥'
+  },
+  {
+    id: 'rafael',
+    name: 'Rafael Eltz',
+    nick: 'Ratito',
+    role: 'Head Coach',
+    quote: 'Analise, ajuste, repita.',
+    hue: 50,
+    initials: 'RE',
+    emoji: '♦'
+  },
+  {
+    id: 'daniel',
+    name: 'Daniel Camel',
+    nick: 'fauzika1',
+    role: 'Head Coach',
+    quote: 'Cada mão é uma oportunidade de evoluir.',
+    hue: 90,
+    initials: 'DC',
+    emoji: '♠'
+  },
+  {
+    id: 'lucas',
+    name: 'Lucas Rocha',
+    nick: 'Rochinha2011',
+    role: 'Head Coach',
+    quote: 'O volume certo com a mentalidade certa.',
+    hue: 220,
+    initials: 'LR',
+    emoji: '♣'
+  },
+];
+
+function buildAvatar(coach, size = 52) {
+  const h = coach.hue;
+  const bg1 = `hsl(${h}, 60%, 14%)`;
+  const bg2 = `hsl(${h}, 50%, 8%)`;
+  const face = `hsl(${h+20}, 30%, 72%)`;
+  const hair = `hsl(${h+10}, 25%, 18%)`;
+  const shirt = `hsl(${h}, 70%, 30%)`;
+  const initials = coach.initials.replace('2','');
+  const s = size;
+  const half = s/2;
+
+  return `<svg viewBox="0 0 ${s} ${s}" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="bg_${coach.id}" cx="50%" cy="40%" r="60%">
+        <stop offset="0%" stop-color="${bg1}"/>
+        <stop offset="100%" stop-color="${bg2}"/>
+      </radialGradient>
+      <clipPath id="clip_${coach.id}">
+        <circle cx="${half}" cy="${half}" r="${half}"/>
+      </clipPath>
+    </defs>
+    <circle cx="${half}" cy="${half}" r="${half}" fill="url(#bg_${coach.id})"/>
+    <!-- shirt -->
+    <ellipse cx="${half}" cy="${s*0.88}" rx="${s*0.38}" ry="${s*0.22}" fill="${shirt}" opacity="0.9" clip-path="url(#clip_${coach.id})"/>
+    <!-- neck -->
+    <rect x="${half - s*0.08}" y="${s*0.55}" width="${s*0.16}" height="${s*0.18}" rx="${s*0.04}" fill="${face}" clip-path="url(#clip_${coach.id})"/>
+    <!-- head -->
+    <ellipse cx="${half}" cy="${s*0.38}" rx="${s*0.19}" ry="${s*0.21}" fill="${face}"/>
+    <!-- hair -->
+    <ellipse cx="${half}" cy="${s*0.2}" rx="${s*0.2}" ry="${s*0.14}" fill="${hair}"/>
+    <!-- eyes -->
+    <circle cx="${half - s*0.06}" cy="${s*0.36}" r="${s*0.025}" fill="${hair}"/>
+    <circle cx="${half + s*0.06}" cy="${s*0.36}" r="${s*0.025}" fill="${hair}"/>
+    <!-- mouth -->
+    <path d="M ${half-s*0.05} ${s*0.45} Q ${half} ${s*0.49} ${half+s*0.05} ${s*0.45}" stroke="${hair}" stroke-width="${s*0.018}" fill="none" stroke-linecap="round"/>
+    <!-- letter accent -->
+    <text x="${half}" y="${s*0.87}" text-anchor="middle" font-family="'Bebas Neue', sans-serif" font-size="${s*0.16}" fill="hsl(${h},80%,70%)" opacity="0.7">${initials}</text>
+  </svg>`;
+}
+
+// ── METRICS ───────────────────────────────────────────────────────────────────
+const METRICS = [
+  { id: 'registro',    icon: '⏱', name: 'Tempo de Registro',   desc: 'Pontualidade no estudo' },
+  { id: 'foco',        icon: '🎯', name: 'Foco na Mesa',         desc: 'Atenção durante o jogo' },
+  { id: 'alimentacao', icon: '🥗', name: 'Alimentação',          desc: 'Qualidade da dieta' },
+  { id: 'sono',        icon: '😴', name: 'Sono / Descanso',      desc: 'Qualidade do sono' },
+  { id: 'estudo',      icon: '📚', name: 'Volume de Estudo',     desc: 'Revisão e aprendizado' },
+  { id: 'mental',      icon: '🧠', name: 'Estado Mental',        desc: 'Tilt control, equilíbrio' },
+  { id: 'exercicio',   icon: '🏃', name: 'Exercício Físico',     desc: 'Atividade física do dia' },
+  { id: 'torneios_q',  icon: '🎰', name: 'Volume de Torneios',   desc: 'Quantidade jogada vs meta' },
+];
+
+let sessions = JSON.parse(localStorage.getItem('samba_sessions') || '[]');
+let todayCoach = (() => {
+  const saved = localStorage.getItem('samba_today_coach');
+  const savedDate = localStorage.getItem('samba_coach_date');
+  const today = new Date().toISOString().split('T')[0];
+  if (saved && savedDate === today) return COACHES.find(c => c.id === saved) || COACHES[0];
+  return COACHES[Math.floor(Math.random() * COACHES.length)];
+})();
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+function init() {
+  const now = new Date();
+  const today = now.toISOString().split('T')[0];
+  document.getElementById('session-date').value = today;
+  document.getElementById('header-date').innerHTML =
+    now.toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) +
+    `<br><span style="color:var(--accent)">✦ ${sessions.length} sessão(ões) registrada(s)</span>`;
+  buildMetricsGrid();
+  renderCoachBanner();
+  buildCoachesGrid();
+  saveCoachChoice();
+}
+
+function saveCoachChoice() {
+  const today = new Date().toISOString().split('T')[0];
+  localStorage.setItem('samba_today_coach', todayCoach.id);
+  localStorage.setItem('samba_coach_date', today);
+}
+
+function renderCoachBanner() {
+  document.getElementById('banner-avatar').innerHTML = buildAvatar(todayCoach, 52);
+  document.getElementById('banner-coach-name').textContent = todayCoach.name;
+  document.getElementById('banner-coach-role').textContent = `"${todayCoach.quote}"`;
+}
+
+// ── COACH PICKER ──────────────────────────────────────────────────────────────
+function buildCoachesGrid() {
+  const grid = document.getElementById('coaches-grid');
+  grid.innerHTML = COACHES.map(c => `
+    <div class="coach-card ${c.id === todayCoach.id ? 'selected' : ''}" onclick="selectCoach('${c.id}')">
+      <div class="coach-card-avatar">${buildAvatar(c, 42)}</div>
+      <div class="coach-card-info">
+        <div class="coach-card-name">${c.name}</div>
+        <div class="coach-card-nick">${c.nick}</div>
+        <div class="coach-card-role">${c.role}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectCoach(id) {
+  todayCoach = COACHES.find(c => c.id === id);
+  saveCoachChoice();
+  renderCoachBanner();
+  buildCoachesGrid();
+  closeModal();
+}
+
+function openCoachPicker() {
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function closeCoachPicker(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+// ── METRICS GRID ──────────────────────────────────────────────────────────────
+function buildMetricsGrid() {
+  const grid = document.getElementById('metrics-grid');
+  grid.innerHTML = '';
+  METRICS.forEach(m => {
+    grid.innerHTML += `
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-icon">${m.icon}</span>
+          <span class="metric-name">${m.name}</span>
+          <span class="metric-score" id="score-${m.id}">5</span>
+        </div>
+        <input type="range" min="1" max="10" value="5" id="range-${m.id}"
+          oninput="document.getElementById('score-${m.id}').textContent=this.value; updateSliderColor(this)">
+        <div class="slider-labels"><span>1</span><span>5</span><span>10</span></div>
+      </div>`;
+  });
+  METRICS.forEach(m => updateSliderColor(document.getElementById('range-' + m.id)));
+}
+
+function updateSliderColor(el) {
+  const v = parseInt(el.value);
+  const pct = (v - 1) / 9 * 100;
+  const col = v <= 3 ? 'var(--red)' : v <= 6 ? 'var(--yellow)' : 'var(--green)';
+  el.style.background = `linear-gradient(to right, ${col} ${pct}%, var(--border) ${pct}%)`;
+  const scoreId = el.id.replace('range-', 'score-');
+  document.getElementById(scoreId).style.color = col;
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(tab, event) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+  if (tab === 'history') renderHistory();
+  if (tab === 'stats') renderStats();
+}
+
+// ── ENERGIA & HUMOR SELECTOR ──────────────────────────────────────────────────
+let ehState = { energia: null, humor: null };
+
+function selectEH(btn) {
+  const group = btn.dataset.group;
+  const val   = btn.dataset.value;
+  document.querySelectorAll(`.eh-btn[data-group="${group}"]`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  ehState[group] = val;
+}
+
+function resetEH() {
+  ehState = { energia: null, humor: null };
+  document.querySelectorAll('.eh-btn').forEach(b => b.classList.remove('selected'));
+}
+
+// ── SAVE ──────────────────────────────────────────────────────────────────────
+function saveSession() {
+  const scores = {};
+  METRICS.forEach(m => { scores[m.id] = parseInt(document.getElementById('range-' + m.id).value); });
+
+  const session = {
+    id: Date.now(),
+    date: document.getElementById('session-date').value,
+    duration: parseFloat(document.getElementById('duration').value) || 0,
+    torneios: parseInt(document.getElementById('torneios').value) || 0,
+    intention: document.getElementById('intention').value,
+    energia: ehState.energia,
+    humor: ehState.humor,
+    notes: document.getElementById('notes').value,
+    coachId: todayCoach.id,
+    scores,
+  };
+
+  sessions.unshift(session);
+  localStorage.setItem('samba_sessions', JSON.stringify(sessions));
+  showToast();
+  document.getElementById('duration').value = '';
+  document.getElementById('torneios').value = '';
+  document.getElementById('intention').value = '';
+  document.getElementById('notes').value = '';
+  resetEH();
+  init();
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── HISTORY ───────────────────────────────────────────────────────────────────
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  if (!sessions.length) {
+    list.innerHTML = '<div class="history-empty">NENHUMA SESSÃO REGISTRADA</div>';
+    return;
+  }
+
+  list.innerHTML = sessions.map(s => {
+    const coach = COACHES.find(c => c.id === s.coachId) || null;
+    const chips = METRICS.map(m => {
+      const v = s.scores[m.id] || 0;
+      const cls = v >= 8 ? 'high' : v >= 5 ? 'med' : 'low';
+      return `<span class="score-chip ${cls}">${m.icon} <span class="chip-val">${v}</span></span>`;
+    }).join('');
+    const avg = (Object.values(s.scores).reduce((a,b)=>a+b,0) / METRICS.length).toFixed(1);
+    const avgCol = avg >= 8 ? 'var(--green)' : avg >= 5 ? 'var(--yellow)' : 'var(--red)';
+    const dateStr = new Date(s.date + 'T12:00:00').toLocaleDateString('pt-BR', {day:'2-digit', month:'short', year:'numeric'});
+    const miniAvatar = coach ? `<div class="session-mini-avatar">${buildAvatar(coach, 30)}</div>` : '';
+    const coachLabel = coach ? `<div class="session-coach-label">&#11088; ${coach.name}</div>` : '';
+    const ENERGIA_LABEL = { baixa: '😴 Baixa', media: '🔋 Média', alta: '⚡ Alta', turbinado: '🔥 Turbinado' };
+    const ENERGIA_CLS   = { baixa: 'low', media: 'med', alta: 'high', turbinado: 'high' };
+    const HUMOR_LABEL   = { desmotivado: '😞 Desmotivado', neutro: '😐 Neutro', motivado: '😊 Motivado', no_modo: '⚔️ Pronto pra Guerra' };
+    const HUMOR_CLS     = { desmotivado: 'low', neutro: 'med', motivado: 'high', no_modo: 'high' };
+    const extraChips = (s.energia ? `<span class="score-chip ${ENERGIA_CLS[s.energia] || 'med'}"><span class="chip-val">${ENERGIA_LABEL[s.energia] || s.energia}</span></span>` : '') +
+                       (s.humor   ? `<span class="score-chip ${HUMOR_CLS[s.humor] || 'med'}"><span class="chip-val">${HUMOR_LABEL[s.humor] || s.humor}</span></span>` : '');
+    const intentionHtml = s.intention ? `<div style="font-size:0.7rem;color:var(--muted2);font-style:italic;margin-bottom:10px;padding:8px 10px;background:var(--surface2);border-radius:6px;border-left:2px solid var(--accent)">&#128161; ${s.intention}</div>` : '';
+
+    return `<div class="session-card">
+      <button class="delete-btn" onclick="deleteSession(${s.id}, event)">✕</button>
+      <div class="session-card-header">
+        <div class="session-card-left">
+          ${miniAvatar}
+          <div class="session-date-wrap">
+            <div class="session-date">${dateStr}${(s.duration ? ' · ⏱ ' + s.duration + 'h' : '') + (s.torneios ? ' · 🎰 ' + s.torneios + ' torneios' : '')}</div>
+            ${coachLabel}
+          </div>
+        </div>
+        <div class="session-result" style="color:${avgCol}">${avg}<span style="font-family:'DM Mono',monospace;font-size:0.75rem;opacity:0.5">/10</span></div>
+      </div>
+      ${intentionHtml}
+      <div class="session-meta">
+        <span>Média: ${avg}/10</span>
+        ${s.notes ? '<span>&#128221; Com notas</span>' : ''}
+      </div>
+      <div class="session-scores">${extraChips}${chips}</div>
+    </div>`;
+  }).join('');
+}
+
+function deleteSession(id, e) {
+  e.stopPropagation();
+  if (!confirm('Remover esta sessão?')) return;
+  sessions = sessions.filter(s => s.id !== id);
+  localStorage.setItem('samba_sessions', JSON.stringify(sessions));
+  renderHistory();
+  init();
+}
+
+// ── STATS ─────────────────────────────────────────────────────────────────────
+let trendChart = null;
+let radarChart = null;
+
+function renderStats() {
+  const grid = document.getElementById('stats-grid');
+  if (!sessions.length) {
+    grid.innerHTML = '<div class="history-empty" style="grid-column:1/-1">NENHUMA SESSÃO AINDA</div>';
+    return;
+  }
+
+  const totalH = sessions.reduce((a, s) => a + (s.duration || 0), 0);
+  const avgscore = sessions.reduce((a, s) => {
+    return a + Object.values(s.scores).reduce((x,y)=>x+y,0) / METRICS.length;
+  }, 0) / sessions.length;
+
+  const sorted7 = [...sessions].sort((a,b) => new Date(a.date)-new Date(b.date)).slice(-7);
+  const recentAvg = sorted7.length
+    ? (sorted7.reduce((a,s) => a + Object.values(s.scores).reduce((x,y)=>x+y,0)/METRICS.length, 0) / sorted7.length).toFixed(1)
+    : '—';
+
+  const avgCol = avgscore >= 8 ? 'var(--green)' : avgscore >= 5 ? 'var(--yellow)' : 'var(--red)';
+
+  grid.innerHTML = `
+    <div class="stat-box">
+      <div class="stat-val" style="color:${avgCol}">${avgscore.toFixed(1)}</div>
+      <div class="stat-label">Média Geral</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">${sessions.length}</div>
+      <div class="stat-label">Sessões</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">${totalH.toFixed(0)}h</div>
+      <div class="stat-label">Horas Registradas</div>
+    </div>
+    <div class="stat-box" style="grid-column:1/-1">
+      <div class="stat-val" style="color:var(--accent);font-size:1.5rem">${recentAvg}</div>
+      <div class="stat-label">Média Últimas 7 Sessões</div>
+    </div>`;
+
+  const trendSorted = [...sessions].sort((a,b) => new Date(a.date)-new Date(b.date));
+  const trendLabels = trendSorted.map(s => new Date(s.date+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}));
+  const trendValues = trendSorted.map(s => (Object.values(s.scores).reduce((a,b)=>a+b,0)/METRICS.length).toFixed(2));
+
+  if (trendChart) trendChart.destroy();
+  const bCtx = document.getElementById('chart-trend').getContext('2d');
+  const gradB = bCtx.createLinearGradient(0, 0, 0, 160);
+  gradB.addColorStop(0, 'rgba(0,200,150,0.22)');
+  gradB.addColorStop(1, 'rgba(0,200,150,0)');
+  trendChart = new Chart(bCtx, {
+    type: 'line',
+    data: {
+      labels: trendLabels,
+      datasets: [{
+        data: trendValues,
+        borderColor: '#00c896',
+        backgroundColor: gradB,
+        borderWidth: 2,
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: '#00c896',
+        pointRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: '#1e2535' }, ticks: { color: '#4a5568', font: { family: 'DM Mono', size: 10 } } },
+        y: { min: 0, max: 10, grid: { color: '#1e2535' }, ticks: { color: '#4a5568', font: { family: 'DM Mono', size: 10 } } }
+      }
+    }
+  });
+
+  const metricAvgs = METRICS.map(m => {
+    const vals = sessions.map(s => s.scores[m.id] || 0);
+    return (vals.reduce((a,b)=>a+b,0) / vals.length).toFixed(1);
+  });
+
+  if (radarChart) radarChart.destroy();
+  const rCtx = document.getElementById('chart-radar').getContext('2d');
+  const gradR = rCtx.createLinearGradient(0,0,0,200);
+  gradR.addColorStop(0, 'rgba(0,200,150,0.28)');
+  gradR.addColorStop(1, 'rgba(0,200,150,0.05)');
+  radarChart = new Chart(rCtx, {
+    type: 'radar',
+    data: {
+      labels: METRICS.map(m => m.icon),
+      datasets: [{
+        data: metricAvgs,
+        backgroundColor: gradR,
+        borderColor: 'rgba(0,200,150,0.7)',
+        borderWidth: 2,
+        pointBackgroundColor: '#00c896',
+        pointRadius: 4,
+      }]
+    },
+    options: {
+      responsive: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        r: {
+          min: 0, max: 10,
+          grid: { color: '#1e2535' },
+          ticks: { display: false },
+          pointLabels: { color: '#4a5568', font: { size: 14 } }
+        }
+      }
+    }
+  });
+
+  const legend = document.getElementById('radar-legend');
+  legend.innerHTML = METRICS.map((m, i) => {
+    const v = parseFloat(metricAvgs[i]);
+    const col = v >= 8 ? 'var(--green)' : v >= 5 ? 'var(--yellow)' : 'var(--red)';
+    return `<div class="legend-item">
+      <div class="legend-name"><div class="legend-dot" style="background:${col}"></div>${m.name}</div>
+      <div class="legend-avg" style="color:${col}">${v}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+const chartScript = document.createElement('script');
+chartScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js';
+chartScript.onload = init;
+document.head.appendChild(chartScript);
+</script>
+</body>
+</html>
